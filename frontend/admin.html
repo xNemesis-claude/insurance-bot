@@ -201,9 +201,22 @@
       return d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
     }
 
+    let adminKey = localStorage.getItem('admin_key');
+
+    if (!adminKey) {
+      adminKey = prompt('Введите пароль администратора:');
+      if (!adminKey) { document.body.innerHTML = '<p style="padding:40px;color:#999">Доступ закрыт.</p>'; }
+      else localStorage.setItem('admin_key', adminKey);
+    }
+
     async function loadStats() {
       try {
-        const res = await fetch('/api/leads/stats');
+        const res = await fetch('/api/leads/stats?key=' + encodeURIComponent(adminKey));
+        if (res.status === 401) {
+          localStorage.removeItem('admin_key');
+          document.body.innerHTML = '<p style="padding:40px;color:#c8102e">Неверный пароль. <a href="/admin.html">Попробовать снова</a></p>';
+          return;
+        }
         const data = await res.json();
 
         document.getElementById('stat-messages').textContent = data.totalMessages;

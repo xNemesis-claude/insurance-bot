@@ -35,6 +35,11 @@ router.post('/track', (req, res) => {
 });
 
 router.get('/stats', (req, res) => {
+  const adminKey = process.env.ADMIN_KEY;
+  if (!adminKey || req.query.key !== adminKey) {
+    return res.status(401).json({ error: 'Доступ запрещён' });
+  }
+
   const topQuestions = [...questionStats.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)

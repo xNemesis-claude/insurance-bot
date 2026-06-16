@@ -6,9 +6,7 @@
       "Read(//usr/local/bin/**)",
       "Bash(claude-code init *)",
       "Bash(npx *)",
-      "WebSearch",
-      "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git *)"
     ]
   }
 }

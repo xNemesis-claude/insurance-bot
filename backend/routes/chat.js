@@ -8,11 +8,33 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 // In-memory conversation store (keyed by sessionId)
 const sessions = new Map();
 
+// Simple rate limiter: max 30 requests per IP per minute
+const rateLimiter = new Map();
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const window = 60_000;
+  const max = 30;
+  if (!rateLimiter.has(ip)) rateLimiter.set(ip, []);
+  const timestamps = rateLimiter.get(ip).filter(t => now - t < window);
+  timestamps.push(now);
+  rateLimiter.set(ip, timestamps);
+  return timestamps.length <= max;
+}
+
 router.post('/message', async (req, res) => {
+  const ip = req.ip || req.connection.remoteAddress;
+  if (!checkRateLimit(ip)) {
+    return res.status(429).json({ error: 'Слишком много запросов. Подождите минуту.' });
+  }
+
   const { message, sessionId } = req.body;
 
   if (!message || !sessionId) {
     return res.status(400).json({ error: 'message и sessionId обязательны' });
+  }
+
+  if (message.length > 1000) {
+    return res.status(400).json({ error: 'Сообщение слишком длинное.' });
   }
 
   if (!sessions.has(sessionId)) {
