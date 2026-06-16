@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Страховой помощник</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="chat-wrapper">
+    <div class="chat-header">
+      <div class="header-avatar">🛡️</div>
+      <div class="header-info">
+        <div class="header-title">Страховой помощник</div>
+        <div class="header-subtitle" id="company-name">Инго Армения</div>
+      </div>
+      <div class="header-status">
+        <span class="status-dot"></span> Онлайн
+      </div>
+    </div>
+
+    <div class="chat-messages" id="messages">
+      <div class="message bot">
+        <div class="bubble">
+          Здравствуйте! 👋 Я AI-помощник страховой компании.<br><br>
+          Помогу вам с вопросами по <strong>КАСКО, ОСАГО, ДМС</strong> и другим видам страхования.<br><br>
+          Чем могу помочь?
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-actions" id="quick-actions">
+      <button onclick="sendQuick('Сколько стоит КАСКО?')">💰 Цена КАСКО</button>
+      <button onclick="sendQuick('Что такое ОСАГО?')">🚗 Что такое ОСАГО</button>
+      <button onclick="sendQuick('Как оформить ДМС?')">❤️ ДМС</button>
+      <button onclick="sendQuick('Как получить выплату по страховке?')">📋 Страховой случай</button>
+    </div>
+
+    <div class="chat-input-area">
+      <textarea
+        id="user-input"
+        placeholder="Напишите ваш вопрос..."
+        rows="1"
+        onkeydown="handleKey(event)"
+      ></textarea>
+      <button id="send-btn" onclick="sendMessage()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

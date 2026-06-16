@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew install *)",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//usr/local/bin/**)",
+      "Bash(claude-code init *)",
+      "Bash(npx *)"
+    ]
+  }
+}
