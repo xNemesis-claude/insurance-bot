@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Статистика — ИНГО Армения</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #c8102e, #a00d24);
+      color: #fff;
+      padding: 20px 28px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 { font-size: 22px; font-weight: 800; }
+    .header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+
+    .refresh-btn {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .refresh-btn:hover { background: rgba(255,255,255,0.3); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+
+    .card-number { font-size: 36px; font-weight: 800; color: #c8102e; }
+    .card-label { font-size: 13px; color: #888; margin-top: 4px; }
+
+    .section {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e1e1e;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* Leads table */
+    .leads-table { width: 100%; border-collapse: collapse; }
+    .leads-table th {
+      text-align: left;
+      font-size: 12px;
+      color: #999;
+      font-weight: 600;
+      padding: 8px 12px;
+      background: #fafafa;
+      border-radius: 8px;
+    }
+
+    .leads-table td {
+      padding: 12px 12px;
+      font-size: 14px;
+      border-bottom: 1px solid #f5f5f5;
+      color: #333;
+    }
+
+    .leads-table tr:last-child td { border-bottom: none; }
+
+    .lead-id {
+      font-size: 12px;
+      color: #bbb;
+      font-weight: 600;
+    }
+
+    .phone-link {
+      color: #c8102e;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .phone-link:hover { text-decoration: underline; }
+
+    .time-badge {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    /* Questions */
+    .question-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f5f5f5;
+      gap: 16px;
+    }
+
+    .question-row:last-child { border-bottom: none; }
+
+    .question-text {
+      font-size: 14px;
+      color: #333;
+      flex: 1;
+    }
+
+    .question-count {
+      background: #fde8e8;
+      color: #c8102e;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .empty {
+      text-align: center;
+      color: #bbb;
+      padding: 24px;
+      font-size: 14px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #c8102e;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <a href="/" class="back-link">← Вернуться к боту</a>
+
+  <div class="header">
+    <div>
+      <h1>📊 Статистика</h1>
+      <p>ИНГО Армения — AI Ассистент</p>
+    </div>
+    <button class="refresh-btn" onclick="loadStats()">🔄 Обновить</button>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-number" id="stat-messages">—</div>
+      <div class="card-label">Сообщений от клиентов</div>
+    </div>
+    <div class="card">
+      <div class="card-number" id="stat-leads">—</div>
+      <div class="card-label">Заявок "Перезвоните"</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📞 Заявки на обратный звонок</h2>
+    <div id="leads-container"><div class="empty">Загрузка...</div></div>
+  </div>
+
+  <div class="section">
+    <h2>💬 Популярные вопросы</h2>
+    <div id="questions-container"><div class="empty">Загрузка...</div></div>
+  </div>
+
+  <script>
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/leads/stats');
+        const data = await res.json();
+
+        document.getElementById('stat-messages').textContent = data.totalMessages;
+        document.getElementById('stat-leads').textContent = data.totalLeads;
+
+        // Leads
+        const leadsEl = document.getElementById('leads-container');
+        if (data.leads.length === 0) {
+          leadsEl.innerHTML = '<div class="empty">Заявок пока нет</div>';
+        } else {
+          leadsEl.innerHTML = `
+            <table class="leads-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Имя</th>
+                  <th>Телефон</th>
+                  <th>Дата и время</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${data.leads.map(l => `
+                  <tr>
+                    <td class="lead-id">${l.id}</td>
+                    <td>${l.name}</td>
+                    <td><a class="phone-link" href="tel:${l.phone}">${l.phone}</a></td>
+                    <td class="time-badge">${formatDate(l.createdAt)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          `;
+        }
+
+        // Questions
+        const qEl = document.getElementById('questions-container');
+        if (data.topQuestions.length === 0) {
+          qEl.innerHTML = '<div class="empty">Вопросов пока нет</div>';
+        } else {
+          qEl.innerHTML = data.topQuestions.map(q => `
+            <div class="question-row">
+              <span class="question-text">${q.question}</span>
+              <span class="question-count">${q.count}×</span>
+            </div>
+          `).join('');
+        }
+
+      } catch {
+        document.getElementById('leads-container').innerHTML = '<div class="empty">Ошибка загрузки</div>';
+      }
+    }
+
+    loadStats();
+    setInterval(loadStats, 30000); // auto-refresh every 30s
+  </script>
+</body>
+</html>

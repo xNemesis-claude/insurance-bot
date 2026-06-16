@@ -9,8 +9,9 @@
 <body>
   <div class="page-bg">
     <div class="brand-badge">
-      <img src="https://ingoarmenia.am/wp-content/themes/ingo/images/logo.png" alt="ИНГО Армения" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block'">
-      <span id="logo-text" style="display:none; font-weight:800; font-size:18px; color:#c8102e; letter-spacing:1px;">ИНГО АРМЕНИЯ</span>
+      <span class="brand-logo">ИНГО АРМЕНИЯ</span>
+      <span class="brand-sep">|</span>
+      <span class="brand-sub">AI Страховой помощник</span>
     </div>
 
     <div class="chat-wrapper">
@@ -18,7 +19,7 @@
         <div class="header-avatar">🛡️</div>
         <div class="header-info">
           <div class="header-title">Страховой помощник</div>
-          <div class="header-subtitle">ИНГО Армения · AI Ассистент</div>
+          <div class="header-subtitle">ИНГО Армения · Отвечаю 24/7</div>
         </div>
         <div class="header-status">
           <span class="status-dot"></span> Онлайн
@@ -31,18 +32,23 @@
           <div class="bubble">
             Բարև ձեզ! Здравствуйте! 👋<br><br>
             Я AI-помощник страховой компании <strong>ИНГО Армения</strong>.<br><br>
-            Помогу с вопросами по <strong>КАСКО, ОСАГО, ДМС</strong> и другим видам страхования. Отвечаю на русском и армянском языке.<br><br>
+            Помогу с вопросами по <strong>КАСКО, ОСАГО, ДМС</strong>, страхованию имущества и путешествий. Отвечаю на русском и армянском языке.<br><br>
             Чем могу помочь?
           </div>
         </div>
       </div>
 
       <div class="quick-actions" id="quick-actions">
-        <button onclick="sendQuick('Сколько стоит КАСКО?')">🚗 Цена КАСКО</button>
+        <button onclick="sendQuick('Сколько стоит КАСКО?')">🚗 КАСКО</button>
         <button onclick="sendQuick('Что такое ОСАГО в Армении?')">📋 ОСАГО</button>
         <button onclick="sendQuick('Расскажи про ДМС')">❤️ ДМС</button>
-        <button onclick="sendQuick('Как оформить страховку для путешествия?')">✈️ Путешествия</button>
+        <button onclick="sendQuick('Страховка для путешествий')">✈️ Путешествия</button>
         <button onclick="sendQuick('Как получить выплату по страховому случаю?')">💰 Выплата</button>
+      </div>
+
+      <div class="callback-bar">
+        <span class="callback-text">Хотите чтобы вам перезвонили?</span>
+        <button class="callback-btn" onclick="openCallback()">📞 Перезвоните мне</button>
       </div>
 
       <div class="chat-input-area">
@@ -67,6 +73,27 @@
         <span>·</span>
         <a href="https://ingoarmenia.am" target="_blank">ingoarmenia.am</a>
       </div>
+    </div>
+  </div>
+
+  <!-- Callback modal -->
+  <div class="modal-overlay" id="callback-modal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">📞 Перезвоните мне</div>
+        <button class="modal-close" onclick="closeCallback()">✕</button>
+      </div>
+      <p class="modal-desc">Оставьте контакты — наш специалист свяжется с вами в течение рабочего часа.</p>
+      <div class="modal-field">
+        <label>Ваше имя</label>
+        <input id="cb-name" type="text" placeholder="Арман" />
+      </div>
+      <div class="modal-field">
+        <label>Номер телефона</label>
+        <input id="cb-phone" type="tel" placeholder="+374 99 123-456" />
+      </div>
+      <div class="modal-error" id="cb-error"></div>
+      <button class="modal-submit" id="cb-submit" onclick="submitCallback()">Отправить заявку</button>
     </div>
   </div>
 

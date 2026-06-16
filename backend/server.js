@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const chatRouter = require('./routes/chat');
+const leadsRouter = require('./routes/leads');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 
 // API routes
 app.use('/api/chat', chatRouter);
+app.use('/api/leads', leadsRouter);
 
 app.listen(PORT, () => {
   console.log(`✅ Сервер запущен: http://localhost:${PORT}`);
